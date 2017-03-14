@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Smell</string>
+    <string name="action_settings">Settings</string>
+    <string name="pasw_hint">请输入解锁图案</string>
+    <string name="pasw_hint_again">请再次输入解锁图案</string>
+    <string name="pasw_hint_error">两次输入不一致  请重新输入</string>
+    <string name="pasw_verify_success">验证成功</string>
+    <string name="pasw_verify_error">图案错误  请再次输入</string>
+    <string name="pasw_null">未设置密码  无法进行验证</string>
+    <string name="pasw_draw_shortorlong">密码过短或过长  请重新输入</string>
+</resources>

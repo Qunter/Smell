@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#aabbcc"
+    android:layout_margin="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="32dp"
+        android:orientation="horizontal">
+        <com.yufa.smell.CustomView.CircleView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/image"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:paddingLeft="32dp"
+            android:drawablePadding="16dp"
+            android:background="@drawable/background_comment"
+            android:textColor="@color/colorWhite"
+            android:text="测试测试"
+            android:id="@+id/smellinfo_snippet"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="32dp"
+        android:orientation="horizontal">
+        <com.yufa.smell.CustomView.CircleView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="start"
+            android:src="@drawable/image"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="16dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="16dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="老王" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:text="2017-3-12" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:text="我是评论"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:id="@+id/smellinfo_text"
+        app:errorEnabled="true"
+        android:hint="请输入评论">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/smellinfo_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@drawable/background_button"
+        android:textColor="@color/colorWhite"
+        android:text="评论"/>
+
+</LinearLayout>

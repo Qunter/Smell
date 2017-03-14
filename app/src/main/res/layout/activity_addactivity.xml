@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--添加活动-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:background="@drawable/mapbackground"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="32dp"
+        android:background="@drawable/background_white"
+        android:orientation="vertical">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:id="@+id/addActivity_title"
+            android:hint="活动主题" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:id="@+id/addActivity_data"
+            android:hint="活动信息" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:id="@+id/addActivity_radius"
+            android:hint="宣传半径（米）" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center_vertical"
+            android:background="@null"
+            android:id="@+id/addActivity_image"
+            android:text="背景图片" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center_vertical"
+            android:background="@null"
+            android:id="@+id/addActivity_who"
+            android:text="谁可以看" />
+
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:max="24"
+            android:progress="12"
+            android:id="@+id/addActivity_time"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:id="@+id/addActivity_show"
+            android:text="气泡持续（12小时）" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/background_button"
+            android:textColor="@color/colorWhite"
+            android:id="@+id/addActivity_builders"
+            android:text="组建活动"/>
+    </LinearLayout>
+
+</LinearLayout>

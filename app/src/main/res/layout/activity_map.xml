@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 地图显示页面 -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <com.amap.api.maps2d.MapView
+        android:id="@+id/map"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+    <RelativeLayout
+        android:id="@+id/menulist"
+        android:layout_width="264dp"
+        android:layout_height="264dp"
+        android:background="@drawable/menu_list_bg"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true">
+        <com.yufa.smell.Entity.MenuItem
+            android:id="@+id/qiwei"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="30dp">
+        </com.yufa.smell.Entity.MenuItem>
+        <com.yufa.smell.Entity.MenuItem
+            android:id="@+id/qipao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="100dp">
+        </com.yufa.smell.Entity.MenuItem>
+        <com.yufa.smell.Entity.MenuItem
+            android:id="@+id/haoyou"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="95dp"
+            android:layout_marginEnd="165dp">
+        </com.yufa.smell.Entity.MenuItem>
+        <com.yufa.smell.Entity.MenuItem
+            android:id="@+id/shezhi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="175dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="195dp">
+        </com.yufa.smell.Entity.MenuItem>
+
+
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/menuBtn"
+        android:layout_width="@dimen/mIconSizeWidth"
+        android:layout_height="@dimen/mIconSizeHeight"
+        android:background="@drawable/menu1"
+        android:layout_margin="15dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true">
+    </RelativeLayout>
+
+    <ImageButton
+        android:id="@+id/swip"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="32dp"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/cut1"/>
+
+</RelativeLayout>

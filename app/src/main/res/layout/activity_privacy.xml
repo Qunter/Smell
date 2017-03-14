@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 隐私页面 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/mapbackground"
+    android:orientation="vertical">
+
+    <include layout="@layout/content_header"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="20dp"
+        android:text="通讯录"/>
+
+
+    <Switch
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/background_white"
+        android:padding="10dp"
+        android:gravity="center"
+        android:text="加我为朋友时需要验证"
+        android:textOff="OFF"
+        android:textOn="ON"
+        android:id="@+id/privacy_addFriend"/>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:text="通讯录"/>
+
+    <Switch
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/background_white"
+        android:padding="10dp"
+        android:gravity="center"
+        android:text="通过手机号搜索到我"
+        android:textOff="OFF"
+        android:textOn="ON"
+        android:id="@+id/privacy_searchMe"/>
+
+    <Switch
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/background_white"
+        android:padding="10dp"
+        android:gravity="center"
+        android:text="向我推荐通讯录朋友"
+        android:textOff="OFF"
+        android:textOn="ON"
+        android:id="@+id/privacy_recommend"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:text="朋友圈"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/background_white"
+        android:drawableRight="@drawable/ic_keyboard_arrow_right"
+        android:gravity="center"
+        android:padding="10dp"
+        android:textColor="#000000"
+        android:text="不让他（她）看我的朋友圈"
+        android:id="@+id/privacy_noSee"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:background="@drawable/background_white"
+        android:drawableRight="@drawable/ic_keyboard_arrow_right"
+        android:gravity="center"
+        android:textColor="#000000"
+        android:text="不看他（她）的朋友圈"
+        android:id="@+id/seeNo"/>
+
+
+    <Switch
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/background_white"
+        android:padding="10dp"
+        android:gravity="center"
+        android:text="允许陌生人查看十张照片"
+        android:textOff="OFF"
+        android:textOn="ON"
+        android:id="@+id/privacy_stranger"/>
+
+</LinearLayout>

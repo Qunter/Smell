@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 加载页面 -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/loading">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:id="@+id/loading_group"
+            android:padding="16dp"
+            android:orientation="vertical">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:id="@+id/loading_login"
+                android:background="@drawable/background_button_white"
+                android:textColor="@color/colorWhite"
+                android:text="登录"/>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:id="@+id/loading_register"
+                android:background="@null"
+                android:textColor="@color/colorWhite"
+                android:text="注册账号"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/login_up"
+            android:padding="16dp"
+            android:gravity="center"
+            android:id="@+id/loading_up"
+            android:textColor="@color/colorWhite"
+            android:text="向上滑动"/>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal">
+
+        <com.yufa.smell.CustomView.CircleView
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_marginTop="80dp"
+            android:transitionName="same"
+            app:border_width="10dp"
+            app:border_color="@color/colorWhite"
+            android:id="@+id/same"
+            android:src="@drawable/image"/>
+
+    </LinearLayout>
+
+</FrameLayout>

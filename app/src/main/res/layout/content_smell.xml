@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?><!--添加气味-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/smell_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_margin="16dp"
+        android:hint="请输入您想要说的话" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_margin="16dp"
+        android:gravity="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/picture2"
+            android:gravity="center"
+            android:id="@+id/smell_image"
+            android:text="照片"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/camera2"
+            android:gravity="center"
+            android:id="@+id/smell_camma"
+            android:text="拍摄"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/collect2"
+            android:gravity="center"
+            android:id="@+id/smell_favorite"
+            android:text="收藏"/>
+    </LinearLayout>
+
+    <SeekBar
+        android:id="@+id/smell_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:max="24"
+        android:progress="12" />
+
+    <TextView
+        android:id="@+id/smell_show"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:gravity="center"
+        android:text="气味持续时间（12小时）"
+        android:textSize="20sp" />
+
+</LinearLayout>

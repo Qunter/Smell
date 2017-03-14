@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--添加群聊-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/mapbackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="72dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:orientation="vertical"
+        android:background="@drawable/background_white">
+        <EditText
+            android:id="@+id/discussionNameEt"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@null"
+            android:textSize="16sp"
+            android:hint="请输入讨论组名称"/>
+        <Button
+            android:id="@+id/peopleInQipaoBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:text="气泡内的人"/>
+        <Button
+            android:id="@+id/peopleInFriendBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:text="好友群聊（请选择好友）"/>
+
+        <Button
+            android:id="@+id/discussionCreateBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/background_button"
+            android:textColor="@color/colorWhite"
+            android:text="搭建群聊"/>
+    </LinearLayout>
+
+</LinearLayout>

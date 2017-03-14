@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--气泡选择对话框-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/qipao_group">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/store"
+            android:drawablePadding="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:id="@+id/qipao_shop"
+            android:textSize="20sp"
+            android:text="搭建商铺"/>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="16dp"
+            android:drawableLeft="@drawable/stall"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:id="@+id/qipao_booth"
+            android:textSize="20sp"
+            android:text="搭建摊位"/>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/activity"
+            android:drawablePadding="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:id="@+id/qipao_activity"
+            android:textSize="20sp"
+            android:text="搭建活动"/>
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:drawablePadding="16dp"
+            android:drawableLeft="@drawable/ic_speaker_notes_blue"
+            android:id="@+id/qipao_chat"
+            android:textSize="20sp"
+            android:text="搭建群聊"/>
+    </RadioGroup>
+
+</LinearLayout>

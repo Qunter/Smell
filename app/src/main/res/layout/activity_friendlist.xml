@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:background="@drawable/friend_background"
+        android:orientation="horizontal"
+        android:id="@+id/friendList_persion">
+
+        <com.yufa.smell.CustomView.CircleView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="20dp"
+            android:id="@+id/friend_image"
+            android:src="@drawable/image" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
+                android:textSize="18sp"
+                android:text="路过的阳子"
+                android:id="@+id/user_nickname"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="14sp"
+                android:textColor="@color/colorWhite"
+                android:text="让阳光洒满每时每刻"
+                android:id="@+id/user_exclusive"/>
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/plus"
+                android:id="@+id/friend_add"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="12dp"/>
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+    <include layout="@layout/top_bar" />
+
+</LinearLayout>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 关于Smell -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/mapbackground">
+
+    <include layout="@layout/content_header"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_marginTop="130dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/background_white">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="70dp"
+            android:textSize="20sp"
+            android:text="让想结识志趣相同的人在地图上建立一个几何形式的活动(组建乐队、社团纳新、公司招人、演讲会......)吸引别人参加。类似传统的传单的宣传。让人们在地图上更直白的看到最贴身的周边消息。"/>
+
+    </LinearLayout>
+
+    <com.yufa.smell.CustomView.CircleView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="80dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/icon"
+        android:id="@+id/circleView" />
+
+</FrameLayout>

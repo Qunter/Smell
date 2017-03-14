@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 注册页面 -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@drawable/loading"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/background_white"
+        android:orientation="vertical"
+        android:layout_marginTop="32dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:singleLine="true"
+            android:id="@+id/register_custom"
+            android:drawableRight="@drawable/id"
+            android:drawablePadding="5dp"
+            android:hint="自定义帐号"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:singleLine="true"
+            android:id="@+id/register_password"
+            android:drawableRight="@drawable/password"
+            android:drawablePadding="5dp"
+            android:inputType="textPassword"
+            android:hint="设置密码"/>
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:hint="手机号码"
+            app:errorEnabled="true"
+            app:hintAnimationEnabled="true"
+            android:id="@+id/register_phone">
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:drawableRight="@drawable/ic_phone"
+                android:drawablePadding="5dp"/>
+        </android.support.design.widget.TextInputLayout>
+
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:singleLine="true"
+            android:id="@+id/register_nickname"
+            android:drawableRight="@drawable/id"
+            android:drawablePadding="5dp"
+            android:hint="昵称"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:id="@+id/register_enroll"
+            android:background="@drawable/background_button"
+            android:textColor="@color/colorWhite"
+            android:text="注册"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:id="@+id/register_login"
+            android:background="@null"
+            android:textColor="@color/colorPrimaryDark"
+            android:text="已有帐号，立即登录"/>
+
+    </LinearLayout>
+
+</FrameLayout>

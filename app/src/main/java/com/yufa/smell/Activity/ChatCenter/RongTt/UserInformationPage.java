@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import com.yufa.smell.Activity.BaseActivity;
+import com.yufa.smell.Activity.ChatCenter.UserSearch;
 import com.yufa.smell.CustomView.CircleView;
 import com.yufa.smell.Entity.UserInformation;
 import com.yufa.smell.R;
@@ -21,6 +22,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.datatype.BatchResult;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 

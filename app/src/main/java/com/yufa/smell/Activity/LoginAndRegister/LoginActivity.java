@@ -76,7 +76,7 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void done(UserInformation loginUser, BmobException e) {
                         if(e==null){
-                            //Toast.makeText(LoginActivity.this,"登录成功", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this,"登录成功", Toast.LENGTH_SHORT).show();
                             startActivity(MapActivity.class);
                             finish();
                             //通过BmobUser user = BmobUser.getCurrentUser()获取登录成功后的本地用户信息

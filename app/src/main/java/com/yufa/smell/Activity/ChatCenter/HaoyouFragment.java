@@ -60,7 +60,6 @@ public class HaoyouFragment extends Fragment implements RongIM.UserInfoProvider{
             super.handleMessage(msg);
             if(msg.what==FRIENDINFORMATIONLISTDOWNOVER){
                 initFriendListViewAdapter();
-                initUserInfo();
             }else if (msg.what==GETLOGINUSERFRIENDLIST){
                 getLoginUserFriendList();
             }
@@ -74,6 +73,7 @@ public class HaoyouFragment extends Fragment implements RongIM.UserInfoProvider{
         if (instance == null) {
             instance = new HaoyouFragment();
         }
+
         return instance;
     }
     @Override
@@ -97,21 +97,16 @@ public class HaoyouFragment extends Fragment implements RongIM.UserInfoProvider{
         super.onActivityCreated(savedInstanceState);
 
     }
-
+    /*
     private void initUserInfo() {
         userIdList = new ArrayList<Friend>();
-        for(int i=0;i<userFriendInformationList.size();i++){
-            userIdList.add(new Friend(userFriendInformationList.get(i).getPhone(),userFriendInformationList.get(i).getNickName(),userFriendInformationList.get(i).getImage()));
-        }
-        /*
         userIdList.add(new Friend("10010", "联通", "http://bmob-cdn-8854.b0.upaiyun.com/2017/01/21/910615c0405f9bd280350b57f8dc180c.png"));//联通图标
         userIdList.add(new Friend("10086", "移动", "http://bmob-cdn-8854.b0.upaiyun.com/2017/01/21/910615c0405f9bd280350b57f8dc180c.png"));//移动图标
         userIdList.add(new Friend("KEFU","官方客服","http://img02.tooopen.com/Download/2010/5/22/20100522103223994012.jpg"));
-        */
         //Token:vCYACJZW6N+6n/bWxTKJa7U/IPKPq/4/rzu3rTMXUSRr+45pWdMmjRNZqGa9SzdWUlX6awVGkOS9UH4AMaCELA==
         RongIM.setUserInfoProvider(this, true);
     }
-
+    */
     @Override
     public UserInfo getUserInfo(String s) {
 
@@ -121,9 +116,11 @@ public class HaoyouFragment extends Fragment implements RongIM.UserInfoProvider{
                 return new UserInfo(i.getUserId(), i.getName(), Uri.parse(i.getPortraitUri()));
             }
         }
+
+
+        Log.e("MainActivity", "UserId is : " + s);
         return null;
     }
-
 
     /**
      * 获取用户好友列表的数据库表单中ID
@@ -136,7 +133,7 @@ public class HaoyouFragment extends Fragment implements RongIM.UserInfoProvider{
             public void done(List<UserFriend> object, BmobException e) {
                 if(e==null){
                     loginUserFriendObjectID =object.get(0).getObjectId();
-                    //Toast.makeText(getContext(), "loginUserFriendObjectID"+loginUserFriendObjectID, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "loginUserFriendObjectID"+loginUserFriendObjectID, Toast.LENGTH_SHORT).show();
                     handler.sendEmptyMessage(GETLOGINUSERFRIENDLIST);
                 }else{
                 }

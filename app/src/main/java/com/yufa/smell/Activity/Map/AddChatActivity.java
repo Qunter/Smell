@@ -4,17 +4,13 @@ import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.yufa.smell.Activity.BaseActivity;
-import com.yufa.smell.Adapter.Adapter;
-import com.yufa.smell.Adapter.ViewHolder;
 import com.yufa.smell.Entity.DiscussionIfm;
 import com.yufa.smell.Entity.UserDis;
 import com.yufa.smell.Entity.UserFriend;

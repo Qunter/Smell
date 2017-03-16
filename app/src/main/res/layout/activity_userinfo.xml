@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/content_header"/>
+
+    <TextView
+        android:id="@+id/userinfo_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="72dp"
+        android:text="修改头像"/>
+    <EditText
+        android:id="@+id/userinfo_nickname"
+        android:layout_below="@id/userinfo_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:hint="修改昵称"/>
+    <EditText
+        android:id="@+id/userinfo_permsg"
+        android:layout_below="@id/userinfo_nickname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_margin="16dp"
+        android:hint="修改个性签名"/>
+    <EditText
+        android:id="@+id/userinfo_age"
+        android:layout_below="@id/userinfo_permsg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_margin="16dp"
+        android:hint="修改年龄"/>
+    <EditText
+        android:id="@+id/userinfo_profession"
+        android:layout_below="@id/userinfo_age"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:layout_margin="16dp"
+        android:hint="修改职业"/>
+
+
+
+    <Button
+        android:id="@+id/userinfo_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/colorAccent"
+        android:text="保存修改"
+        android:background="@drawable/background_button"/>
+
+</RelativeLayout>

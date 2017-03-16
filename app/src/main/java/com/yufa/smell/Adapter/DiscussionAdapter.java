@@ -28,7 +28,7 @@ import io.rong.imlib.model.UserInfo;
  * Created by Administrator on 2017/3/7.
  */
 
-public class DiscussionAdapter extends BaseAdapter{
+public class DiscussionAdapter extends BaseAdapter implements AbsListView.OnScrollListener{
     private List<DiscussionIfm> mList;
     private LayoutInflater mInflater;
     private ImageLoader mImageLoader;
@@ -46,7 +46,7 @@ public class DiscussionAdapter extends BaseAdapter{
         }
         mFirstIn = true;
         //注意为ListView注册滚动监听器
-        //listView.setOnScrollListener(this);
+        listView.setOnScrollListener(this);
     }
 
     /**
@@ -111,7 +111,7 @@ public class DiscussionAdapter extends BaseAdapter{
         });
         return convertView;
     }
-    /*
+
     /**
      * Callback method to be invoked while the list view or grid view is being scrolled. If the
      * view is being scrolled, this method will be called before the next frame of the scroll is
@@ -120,7 +120,6 @@ public class DiscussionAdapter extends BaseAdapter{
      * @param scrollState The current scroll state. One of
      *                    {@link #SCROLL_STATE_TOUCH_SCROLL} or {@link #SCROLL_STATE_IDLE}.
      */
-    /*
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         if (scrollState == SCROLL_STATE_IDLE) {
@@ -141,7 +140,6 @@ public class DiscussionAdapter extends BaseAdapter{
      * @param visibleItemCount the number of visible cells
      * @param totalItemCount   the number of items in the list adaptor
      */
-    /*
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         mStart = firstVisibleItem;
@@ -151,7 +149,6 @@ public class DiscussionAdapter extends BaseAdapter{
             mFirstIn = false;
         }
     }
-    */
 
 
     class ViewHolder {

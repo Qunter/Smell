@@ -1,6 +1,5 @@
 package com.yufa.smell.Entity;
 
-import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobUser;
 
 /**
@@ -19,8 +18,10 @@ public class UserInformation extends BmobUser {
     private double longitude;       //纬度
     private String token;           //融云token
     private String image;           //头像链接
-    private String exclusive="";       //个性签名
+    private String permsg="";       //个性签名
     private Boolean frozen;       //是否冻结
+    private String age="0";
+    private String profession="";
 
     public UserInformation() {
     }
@@ -73,12 +74,12 @@ public class UserInformation extends BmobUser {
         this.image = image;
     }
 
-    public String getExclusive() {
-        return exclusive;
+    public String getPermsg() {
+        return permsg;
     }
 
-    public void setExclusive(String exclusive) {
-        this.exclusive = exclusive;
+    public void setPermsg(String permsg) {
+        this.permsg = permsg;
     }
 
     public Boolean getFrozen() {
@@ -89,4 +90,19 @@ public class UserInformation extends BmobUser {
         this.frozen = frozen;
     }
 
+    public String getProfession() {
+        return profession;
+    }
+
+    public void setProfession(String profession) {
+        this.profession = profession;
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
 }

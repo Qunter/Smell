@@ -25,7 +25,7 @@ import io.rong.imkit.RongIM;
 import io.rong.imlib.model.UserInfo;
 
 
-public class FriendAdapter extends BaseAdapter implements RongIM.UserInfoProvider{
+public class FriendAdapter extends BaseAdapter implements AbsListView.OnScrollListener,RongIM.UserInfoProvider{
     private List<UserInformation> mList;
     private LayoutInflater mInflater;
     private ImageLoader mImageLoader;
@@ -45,7 +45,7 @@ public class FriendAdapter extends BaseAdapter implements RongIM.UserInfoProvide
         }
         mFirstIn = true;
         //注意为ListView注册滚动监听器
-        //listView.setOnScrollListener(this);
+        listView.setOnScrollListener(this);
     }
 
     /**
@@ -110,7 +110,7 @@ public class FriendAdapter extends BaseAdapter implements RongIM.UserInfoProvide
         });
         return convertView;
     }
-    /*
+
     /**
      * Callback method to be invoked while the list view or grid view is being scrolled. If the
      * view is being scrolled, this method will be called before the next frame of the scroll is
@@ -119,7 +119,6 @@ public class FriendAdapter extends BaseAdapter implements RongIM.UserInfoProvide
      * @param scrollState The current scroll state. One of
      *                    {@link #SCROLL_STATE_TOUCH_SCROLL} or {@link #SCROLL_STATE_IDLE}.
      */
-    /*
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
         if (scrollState == SCROLL_STATE_IDLE) {
@@ -130,8 +129,7 @@ public class FriendAdapter extends BaseAdapter implements RongIM.UserInfoProvide
             mImageLoader.cancelAllTasks();
         }
     }
-    */
-    /*
+
     /**
      * Callback method to be invoked when the list or grid has been scrolled. This will be
      * called after the scroll has completed
@@ -141,7 +139,6 @@ public class FriendAdapter extends BaseAdapter implements RongIM.UserInfoProvide
      * @param visibleItemCount the number of visible cells
      * @param totalItemCount   the number of items in the list adaptor
      */
-    /*
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         mStart = firstVisibleItem;
@@ -151,7 +148,6 @@ public class FriendAdapter extends BaseAdapter implements RongIM.UserInfoProvide
             mFirstIn = false;
         }
     }
-    */
 
 
     class ViewHolder {

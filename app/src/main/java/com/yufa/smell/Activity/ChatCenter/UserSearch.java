@@ -1,7 +1,9 @@
 package com.yufa.smell.Activity.ChatCenter;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,6 +11,8 @@ import android.os.Message;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,11 +28,13 @@ import com.yufa.smell.R;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobRelation;
@@ -107,6 +113,7 @@ public class UserSearch extends BaseActivity {
         showActionBar(toolbar);
         headerTextview.setText("添加好友");
         handler.sendEmptyMessage(IFGETFRIENDLIST);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @OnClick({R.id.seachBtn})
@@ -116,7 +123,7 @@ public class UserSearch extends BaseActivity {
                 if(seachEt.getText().toString().equals(BmobUser.getCurrentUser(UserInformation.class).getPhone())){
                     Toast.makeText(getApplicationContext(), "您不能添加自己为好友", Toast.LENGTH_SHORT).show();
                 }else{
-                    searchUserInformation(seachEt.getText().toString());
+                    searchUserInformation(seachEt.getText().toString().trim());
                 }
                 break;
         }
@@ -126,12 +133,34 @@ public class UserSearch extends BaseActivity {
      * bmob查询某用户信息
      */
     private void searchUserInformation(String userNameOrPhone) {
-        final BmobQuery<UserInformation> query = new BmobQuery<UserInformation>();
-        query.addWhereEqualTo("phone", userNameOrPhone);
-        query.findObjects(new FindListener<UserInformation>() {
+        BmobQuery<UserInformation> queryPhone = new BmobQuery<UserInformation>();
+        queryPhone.addWhereEqualTo("phone", userNameOrPhone);
+        BmobQuery<UserInformation> queryAccount = new BmobQuery<UserInformation>();
+        queryAccount.addWhereEqualTo("username", userNameOrPhone);
+        List<BmobQuery<UserInformation>> queries = new ArrayList<BmobQuery<UserInformation>>();
+        queries.add(queryPhone);
+        queries.add(queryAccount);
+        BmobQuery<UserInformation> mainQuery = new BmobQuery<UserInformation>();
+        mainQuery.or(queries);
+        mainQuery.findObjects(new FindListener<UserInformation>() {
             @Override
             public void done(List<UserInformation> object, BmobException e) {
                 if (e == null) {
+                    Log.e("查询大小", object.size()+"");
+                    //如果size为2则使用如下方法，注释掉后面几行
+                    /*
+                    if(object.get(0)!=null){
+                        searchUser = object.get(0);
+                        txUrl = searchUser.getImage();
+                        name = searchUser.getNickName();
+                        handler.sendEmptyMessage(ADDFRIENDASK);
+                    }else if (object.get(1)!=null){
+                        searchUser = object.get(1);
+                        txUrl = searchUser.getImage();
+                        name = searchUser.getNickName();
+                        handler.sendEmptyMessage(ADDFRIENDASK);
+                    }
+                    */
                     searchUser = object.get(0);
                     txUrl = searchUser.getImage();
                     name = searchUser.getNickName();
@@ -274,6 +303,9 @@ public class UserSearch extends BaseActivity {
         LinearLayout.LayoutParams btnparams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         btnparams.setMargins(30, 0, 30, 0);
         Button add = new Button(this);
+        add.setBackgroundResource(R.drawable.background_button);
+        add.setTextColor(Color.WHITE);
+        add.setGravity(Gravity.CENTER);
         add.setText("添加好友");
         add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -282,8 +314,10 @@ public class UserSearch extends BaseActivity {
             }
         });
         add.setLayoutParams(btnparams);
-        add.setGravity(Gravity.CENTER_VERTICAL);
         Button noAdd = new Button(this);
+        noAdd.setBackgroundResource(R.drawable.background_button);
+        noAdd.setTextColor(Color.WHITE);
+        noAdd.setGravity(Gravity.CENTER);
         noAdd.setText("取消");
         noAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -292,7 +326,6 @@ public class UserSearch extends BaseActivity {
             }
         });
         noAdd.setLayoutParams(btnparams);
-        noAdd.setGravity(Gravity.CENTER_VERTICAL);
         friendView.addView(touxiang);
         friendView.addView(userName);
         friendView.addView(add);
@@ -326,5 +359,30 @@ public class UserSearch extends BaseActivity {
         protected void onPostExecute(Bitmap result) {
             imageView.setImageBitmap(result);
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            Intent intent = new Intent();
+            intent.setClass(UserSearch.this,ViewPaperActivity.class);
+            startActivity(intent);
+            UserSearch.this.finish();
+            return false;
+        }else {
+            return super.onKeyDown(keyCode, event);
+        }
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId()==android.R.id.home){
+            Intent intent = new Intent();
+            intent.setClass(UserSearch.this,ViewPaperActivity.class);
+            startActivity(intent);
+            UserSearch.this.finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

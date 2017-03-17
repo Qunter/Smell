@@ -202,16 +202,42 @@ public class RegisterActivity extends BaseActivity {
         builder.setPositiveButton("现在进入", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent();
-                intent.setClass(RegisterActivity.this,MapActivity.class);
-                startActivity(intent);
-                RegisterActivity.this.finish();
+                saveData();
+//                Intent intent = new Intent();
+//                intent.setClass(RegisterActivity.this,MapActivity.class);
+//                startActivity(intent);
+//                RegisterActivity.this.finish();
                 //Toast.makeText(RegisterActivity.this,"现在进入",Toast.LENGTH_SHORT).show();
             }
         });
         builder.setView(view);
         builder.create().show();
     }
+
+    private void saveData(){
+        UserInformation loginUser = new UserInformation();
+        loginUser.setUsername(registerCustom.getText().toString());
+        loginUser.setPassword(registerPassword.getText().toString());
+        //Toast.makeText(LoginActivity.this,username+"  "+password,Toast.LENGTH_SHORT).show();
+        loginUser.login(new SaveListener<UserInformation>() {
+            @Override
+            public void done(UserInformation loginUser, BmobException e) {
+                if(e==null){
+                    Toast.makeText(RegisterActivity.this,"登录成功", Toast.LENGTH_SHORT).show();
+                    startActivity(MapActivity.class);
+                    finish();
+                    //通过BmobUser user = BmobUser.getCurrentUser()获取登录成功后的本地用户信息
+                    //如果是自定义用户对象MyUser，可通过MyUser user = BmobUser.getCurrentUser(MyUser.class)获取自定义用户信息
+                }else{
+                    //Toast.makeText(LoginActivity.this,"登录失败",Toast.LENGTH_SHORT).show();
+                    //Log.e("失败代码",e.toString());
+                    //loge(e);
+                    showDialog();
+                }
+            }
+        });
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {

@@ -21,10 +21,12 @@ public class AgentApplication extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
-
         for (Activity activity : activities) {
             activity.finish();
         }
         System.exit(0);
+    }
+    public List<Activity> getActivities(){
+        return activities;
     }
 }

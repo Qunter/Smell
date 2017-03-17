@@ -42,7 +42,19 @@ public class GetTime {
                 }
             }
         }
-        String s = idata[0]+"-"+idata[1] + "-" + idata[2]+" " + idata[3] + ":" + idata[4]+":" + idata[5];
+        String day = "";
+        if (idata[2]<10){
+            day = "0" + idata[2];
+        }else {
+            day = idata[2]+"";
+        }
+        String month = "";
+        if (idata[1]<10){
+            month = "0" + idata[1];
+        }else {
+            month = idata[1]+"";
+        }
+        String s = idata[0]+"-"+month + "-" + day+" " + idata[3] + ":" + idata[4]+":" + idata[5];
         return s;
     }
     private int getDay(int month){

@@ -76,10 +76,10 @@ public class UserInformationPage extends BaseActivity {
     private void loadingUserInformation(){
         new DownImage(userImg, friendInformation.getImage()).execute(friendInformation.getImage());
         userNameTv.setText(friendInformation.getNickName());
-        if(friendInformation.getExclusive().equals("")){
+        if(friendInformation.getPermsg().equals("")){
             userExclusiveTv.setText("该用户暂未设置个性签名");
         }else{
-            userExclusiveTv.setText(friendInformation.getExclusive());
+            userExclusiveTv.setText(friendInformation.getPermsg());
         }
 
     }

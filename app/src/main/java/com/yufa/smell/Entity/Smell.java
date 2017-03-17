@@ -19,6 +19,7 @@ public class Smell extends BmobObject {
     private String comment;//评论内容
     private String commenter;//评论者
     private String creater;//创建者
+    private String createrPhone;//创建者手机号
     private String commentTime;//评论时间
     private BmobGeoPoint point;
 
@@ -100,5 +101,13 @@ public class Smell extends BmobObject {
 
     public void setCommentTime(String commentTime) {
         this.commentTime = commentTime;
+    }
+
+    public String getCreaterPhone() {
+        return createrPhone;
+    }
+
+    public void setCreaterPhone(String createrPhone) {
+        this.createrPhone = createrPhone;
     }
 }

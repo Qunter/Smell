@@ -1,7 +1,11 @@
 package com.yufa.smell.Activity.ChatCenter;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -17,16 +21,22 @@ import android.widget.TextView;
 import com.yufa.smell.Activity.BaseFragment;
 import com.yufa.smell.Adapter.FragmentAdapter;
 import com.yufa.smell.CustomView.CircleView;
+import com.yufa.smell.CustomView.MyCircleView;
 import com.yufa.smell.Entity.UserInformation;
 import com.yufa.smell.R;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
 import io.rong.imkit.fragment.ConversationListFragment;
 import io.rong.imlib.model.Conversation;
 
@@ -36,7 +46,7 @@ import io.rong.imlib.model.Conversation;
 public class ViewPaperActivity extends BaseFragment implements View.OnClickListener {
 
     @BindView(R.id.friend_image)
-    CircleView friendImage;
+    MyCircleView friendImage;
     @BindView(R.id.friend_add)
     ImageButton friendAdd;
     @BindView(R.id.friendList_persion)
@@ -87,6 +97,25 @@ public class ViewPaperActivity extends BaseFragment implements View.OnClickListe
         changeUserInformation();
     }
 
+    /**
+     * 加载头像
+     */
+
+    private void loadingImage(){
+        String phone = BmobUser.getCurrentUser(UserInformation.class).getPhone();
+        BmobQuery<UserInformation> query = new BmobQuery<UserInformation>();
+        query.addWhereEqualTo("phone",phone);
+        query.findObjects(new FindListener<UserInformation>() {
+            @Override
+            public void done(List<UserInformation> list, BmobException e) {
+                for(UserInformation user:list){
+                    String url = user.getImage();
+                    DownImage downImage = new DownImage(friendImage,url);
+                    downImage.execute(url);
+                }
+            }
+        });
+    }
     /**
      * 初始化会话列表
      */
@@ -217,11 +246,12 @@ public class ViewPaperActivity extends BaseFragment implements View.OnClickListe
         qipaoTv.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
     }
 
-    @OnClick({R.id.friend_add, R.id.friendList_persion,R.id.xiaoxiTv,R.id.haoyouTv,R.id.qipaoTv})
+    @OnClick({R.id.friend_add, R.id.friendList_persion,R.id.xiaoxiTv,R.id.haoyouTv,R.id.qipaoTv,R.id.friend_image})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.friend_add:
                 startActivity(UserSearch.class);
+                ViewPaperActivity.this.finish();
                 break;
             case R.id.friendList_persion:
                 break;
@@ -236,6 +266,11 @@ public class ViewPaperActivity extends BaseFragment implements View.OnClickListe
             case R.id.qipaoTv:
                 if(viewPager.getCurrentItem()!=2)
                     viewPager.setCurrentItem(2);
+                break;
+            case R.id.friend_image:
+                Intent intent = new Intent(ViewPaperActivity.this,UserInfoActivity.class);
+                startActivity(intent);
+                ViewPaperActivity.this.finish();
                 break;
         }
     }
@@ -269,9 +304,36 @@ public class ViewPaperActivity extends BaseFragment implements View.OnClickListe
      */
     private void changeUserInformation(){
         userNickname.setText(BmobUser.getCurrentUser(UserInformation.class).getNickName());
-        if (BmobUser.getCurrentUser(UserInformation.class).getExclusive().equals(""))
+        if (BmobUser.getCurrentUser(UserInformation.class).getPermsg().equals(""))
             userExclusive.setText("用户暂未设置个性签名");
         else
-            userExclusive.setText(BmobUser.getCurrentUser(UserInformation.class).getExclusive());
+            userExclusive.setText(BmobUser.getCurrentUser(UserInformation.class).getPermsg());
+    }
+    class DownImage extends AsyncTask<String, Void, Bitmap> {
+
+        private MyCircleView imageView;
+
+        public DownImage(MyCircleView imageView, String url) {
+            this.imageView = imageView;
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            String url = params[0];
+            Bitmap bitmap = null;
+            try {
+                //加载一个网络图片
+                InputStream is = new URL(url).openStream();
+                bitmap = BitmapFactory.decodeStream(is);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return bitmap;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            imageView.setImageBitmap(result);
+        }
     }
 }

@@ -20,7 +20,7 @@ public class UserInformation extends BmobUser {
     private String image;           //头像链接
     private String permsg="";       //个性签名
     private Boolean frozen;       //是否冻结
-    private String age="0";
+    private String age="";
     private String profession="";
 
     public UserInformation() {

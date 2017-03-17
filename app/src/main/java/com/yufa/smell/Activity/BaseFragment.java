@@ -2,6 +2,7 @@ package com.yufa.smell.Activity;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
+import android.app.Application;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -50,6 +51,8 @@ public abstract class BaseFragment extends FragmentActivity {
 
     public void initVariables(){
         //接收页面之间的数据传递
+        AgentApplication agentApplication = (AgentApplication) getApplication();
+        agentApplication.addActivity(this);
     }
 
     public void initViews(){

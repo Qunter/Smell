@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import butterknife.OnClick;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.UpdateListener;
 
 /**
  * Created by Administrator on 2016/12/22.
@@ -58,19 +60,23 @@ public class ResetActivity extends BaseActivity {
     public void isShowToolBar() {
 
     }
-
     @OnClick(R.id.reset_sure)
     public void onClick() {
         if (resetPassowrd!=null&&resetSubmit!=null){
             String one = resetPassowrd.getText().toString();
             String two = resetSubmit.getText().toString();
             if (one.equals(two)){
-                UserInformation userInformation = new UserInformation();
-                userInformation.setPassword("one");
-                userInformation.save(new SaveListener<String>() {
+                UserInformation newUser = new UserInformation();
+                newUser.setPassword(one);
+                UserInformation loginUser = UserInformation.getCurrentUser(UserInformation.class);
+                newUser.update(loginUser.getObjectId(),new UpdateListener() {
                     @Override
-                    public void done(String s, BmobException e) {
-                        if (e == null)  showDialog();
+                    public void done(BmobException e) {
+                        if(e==null){
+                            showDialog();
+                        }else{
+                            Log.e("密码上传失败", e+"" );
+                        }
                     }
                 });
             }else {
@@ -89,12 +95,13 @@ public class ResetActivity extends BaseActivity {
         TextView textView = (TextView) view.findViewById(R.id.simple_text);
         imageView.setImageResource(R.drawable.repassword);
         textView.setText("密码重置成功");
-        builder.setPositiveButton("现在进入", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("重新登录", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(ResetActivity.this, "现在进入", Toast.LENGTH_SHORT).show();
+                UserInformation.logOut();   //清除bmob登录用户缓存
+                Toast.makeText(ResetActivity.this, "请重新登录", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
-                intent.setClass(ResetActivity.this, MapActivity.class);
+                intent.setClass(ResetActivity.this, LoginActivity.class);
                 startActivity(intent);
                 ResetActivity.this.finish();
             }

@@ -3,11 +3,14 @@ package com.yufa.smell.Activity.LoginAndRegister;
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
+import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +30,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
@@ -49,7 +53,9 @@ public class LoadingActivity extends BaseActivity {
     CircleView same;
     private GestureDetector gestureDetector;
     private Boolean isShow = false;
-    private long exitTime=0;
+    private long exitTime = 0;
+
+    private AnimationDrawable animationDrawable;
 
 
     @Override
@@ -57,9 +63,10 @@ public class LoadingActivity extends BaseActivity {
         super.initViews();
         setContentView(R.layout.activity_loading);
         ButterKnife.bind(this);
-        Bmob.initialize(this,"f0fc59a153ba369c31798409902688bd");
+        Bmob.initialize(this, "f0fc59a153ba369c31798409902688bd");
         gestureDetector = new GestureDetector(LoadingActivity.this, onGestureListener);
         loadingGroup.setVisibility(View.GONE);
+        animationDrawable = (AnimationDrawable) loadingUp.getBackground();
     }
 
     @Override
@@ -72,7 +79,7 @@ public class LoadingActivity extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.loading_login:
-                isLogin();
+                isLogins();
                 break;
             case R.id.loading_register:
                 startActivity(RegisterActivity.class);
@@ -80,32 +87,55 @@ public class LoadingActivity extends BaseActivity {
         }
     }
 
-    private void isLogin(){
+    @SuppressLint("NewApi")
+    private void isLogins() {
         SharedPreferencesHelper sph = SharedPreferencesHelper.getInstance(this);
-        String account = sph.getString("account","null");
-        String password = sph.getString("password","null");
-        final String isLock = sph.getString("drawpasw",null);
+        final String isLock = sph.getString("drawpasw", null);
+        BmobUser bmobUser = BmobUser.getCurrentUser();
+        if (bmobUser != null) {
+            if (isLock != null) {
+                Intent intent = new Intent();
+                intent.putExtra("setOrValidate", 1);
+                intent.setClass(LoadingActivity.this, ScreenLockActivity.class);
+                startActivity(intent);
+            } else {
+                Intent intent = new Intent(LoadingActivity.this, MapActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        } else {
+            Intent intent = new Intent();
+            intent.setClass(LoadingActivity.this, LoginActivity.class);
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(LoadingActivity.this, same, "same").toBundle());
+        }
+    }
+
+    private void isLogin() {
+        SharedPreferencesHelper sph = SharedPreferencesHelper.getInstance(this);
+        String account = sph.getString("account", "null");
+        String password = sph.getString("password", "null");
+        final String isLock = sph.getString("drawpasw", null);
         BmobQuery<UserInformation> query = new BmobQuery<UserInformation>();
-        query.addWhereEqualTo("account",account);
-        query.addWhereEqualTo("password",password);
+        query.addWhereEqualTo("account", account);
+        query.addWhereEqualTo("password", password);
         query.findObjects(new FindListener<UserInformation>() {
             @SuppressLint("NewApi")
             @Override
             public void done(List<UserInformation> list, BmobException e) {
-                if(e == null&&list.size()==1){
-                    if(isLock!=null){
+                if (e == null && list.size() == 1) {
+                    if (isLock != null) {
                         Intent intent = new Intent();
-                        intent.putExtra("setOrValidate",1);
+                        intent.putExtra("setOrValidate", 1);
                         intent.setClass(LoadingActivity.this, ScreenLockActivity.class);
                         startActivity(intent);
-                    }else {
+                    } else {
                         Intent intent = new Intent(LoadingActivity.this, MapActivity.class);
                         startActivity(intent);
                         finish();
                     }
-               } else {
+                } else {
                     Intent intent = new Intent();
-                    intent.setClass(LoadingActivity.this,LoginActivity.class);
+                    intent.setClass(LoadingActivity.this, LoginActivity.class);
                     startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(LoadingActivity.this, same, "same").toBundle());
                 }
             }
@@ -151,11 +181,11 @@ public class LoadingActivity extends BaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            if (isShow){
+            if (isShow) {
                 isShow = false;
                 hideLogin();
-            }else {
-                if((System.currentTimeMillis()-exitTime) > 2000){
+            } else {
+                if ((System.currentTimeMillis() - exitTime) > 2000) {
                     Toast.makeText(getApplicationContext(), "再按一次退出程序", Toast.LENGTH_SHORT).show();
                     exitTime = System.currentTimeMillis();
                 } else {
@@ -163,9 +193,17 @@ public class LoadingActivity extends BaseActivity {
                 }
             }
             return false;
-        }else {
+        } else {
             return super.onKeyDown(keyCode, event);
         }
 
     }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus)
+            animationDrawable.start();
+    }
+
 }

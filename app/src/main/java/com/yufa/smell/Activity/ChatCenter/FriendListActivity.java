@@ -43,10 +43,10 @@ public class FriendListActivity extends BaseActivity {
         setContentView(R.layout.activity_friendlist);
         ButterKnife.bind(this);
         userNickname.setText(BmobUser.getCurrentUser(UserInformation.class).getNickName());
-        if (BmobUser.getCurrentUser(UserInformation.class).getExclusive().equals(""))
+        if (BmobUser.getCurrentUser(UserInformation.class).getPermsg().equals(""))
             userExclusive.setText("用户暂未设置个性签名");
         else
-            userExclusive.setText(BmobUser.getCurrentUser(UserInformation.class).getExclusive());
+            userExclusive.setText(BmobUser.getCurrentUser(UserInformation.class).getPermsg());
     }
 
     @OnClick({R.id.friend_add, R.id.friendList_persion})

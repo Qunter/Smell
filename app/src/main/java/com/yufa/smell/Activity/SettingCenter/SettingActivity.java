@@ -104,17 +104,12 @@ public class SettingActivity extends BaseActivity {
         RongIM.getInstance().logout();//断开融云登录用户连接
         UserInformation.logOut();   //清除bmob登录用户缓存
         //BmobUser currentUser = BmobUser.getCurrentUser(); // 现在的currentUser是null了，应是用于测试currentUser是否为null
-
-        /*
         SharedPreferencesHelper sharedPreferencesHelper = SharedPreferencesHelper.getInstance(SettingActivity.this);
-        sharedPreferencesHelper.putString("account","");
-        sharedPreferencesHelper.putString("password","");
         sharedPreferencesHelper.getString("drawpasw","");
-        */
         Intent intent = new Intent();
         intent.setClass(SettingActivity.this, LoginActivity.class);
         intent.putExtra("isBack",false);
         startActivity(intent);
-        this.finish();
+        getApplication().onTerminate();
     }
 }

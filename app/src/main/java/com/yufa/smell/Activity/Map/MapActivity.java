@@ -5,19 +5,24 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.TextInputLayout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -40,15 +45,20 @@ import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.MyLocationStyle;
+import com.amap.api.maps2d.model.Text;
 import com.amap.api.maps2d.model.TextOptions;
 import com.yufa.smell.Activity.AgentApplication;
 import com.yufa.smell.Activity.BaseActivity;
 import com.yufa.smell.Activity.ChatCenter.ViewPaperActivity;
 import com.yufa.smell.Activity.SettingCenter.SettingActivity;
+import com.yufa.smell.CustomView.CircleView;
+import com.yufa.smell.CustomView.MyCircleView;
 import com.yufa.smell.Entity.Bubble;
 import com.yufa.smell.Entity.MenuItem;
 import com.yufa.smell.Entity.Smell;
+import com.yufa.smell.Entity.SmellComment;
 import com.yufa.smell.Entity.Type;
+import com.yufa.smell.Entity.UserFriend;
 import com.yufa.smell.Entity.UserInformation;
 import com.yufa.smell.Util.BitmapAdd;
 import com.yufa.smell.Util.GetTime;
@@ -57,7 +67,11 @@ import com.yufa.smell.Util.MenuShow;
 import com.yufa.smell.R;
 import com.yufa.smell.Util.ShowTool;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -66,13 +80,18 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.datatype.BmobGeoPoint;
+import cn.bmob.v3.datatype.BmobPointer;
+import cn.bmob.v3.datatype.BmobRelation;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.listener.UploadFileListener;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.RongIMClient;
 
+import static android.R.id.list;
 import static com.amap.api.maps2d.AMapOptions.LOGO_POSITION_BOTTOM_RIGHT;
 
 /**
@@ -113,12 +132,18 @@ public class MapActivity extends BaseActivity implements LocationSource,
     private int textColor = Color.parseColor("#ffffff");
     private int textColorChange = Color.parseColor("#2196f3");
     //定义菜单MSG的信息，按下哪个发送哪条
-    private final int QIWEI=0x00,QIPAO=0x01,HAOYOU=0x02,SHEZHI=0x03;
+    private final int QIWEI=0x00,QIPAO=0x01,HAOYOU=0x02,SHEZHI=0x03,IFGETFRIENDLIST=0x04,GETFRIENDFRIENDOBJECT=0x05,SAVEUSERFRIENDLIST=0x06,SAVEFRIENDFRIENDLIST=0x07;
     //定义菜单按钮MSG
     private final int MENU=0x10;
     //菜单列表的布局
     private RelativeLayout menuList;
     private String userID;
+    private String loginUserFriendObjectID = "",loginFriendFriendObjectID="";
+    private String searchUserUrl,searchUserNickName,searchUserPerMsg,searchUserPhone;
+    private String smellCreater,smellText;
+    private UserInformation searchUser;
+    private List<UserInformation> userFriendInformationList;
+    private String userFriendNickNameString[];
     //用于恢复被点击按钮的颜色
     private Handler mHandler = new Handler(){
         @Override
@@ -149,6 +174,20 @@ public class MapActivity extends BaseActivity implements LocationSource,
                     shezhi.setTextViewColor(textColor);
                     shezhi();
                     break;
+                case IFGETFRIENDLIST:
+                    searchUserFriendInformation();
+                    break;
+                case SAVEUSERFRIENDLIST:
+                    saveUserFriendList();
+                    Dialog dialog = (Dialog) msg.obj;
+                    dialog.dismiss();
+                    break;
+                case GETFRIENDFRIENDOBJECT:
+                    searchFriendFriendInformation();
+                    break;
+                case SAVEFRIENDFRIENDLIST:
+                    saveFriendFriendList();
+                    break;
             }
             super.handleMessage(msg);
 
@@ -162,6 +201,7 @@ public class MapActivity extends BaseActivity implements LocationSource,
         RongIM.init(this);
         setContentView(R.layout.activity_map);
         Bmob.initialize(this,"f0fc59a153ba369c31798409902688bd");
+        mHandler.sendEmptyMessage(IFGETFRIENDLIST);
         initUserToken();
         mapView = (MapView) findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);// 此方法必须重写
@@ -291,9 +331,10 @@ public class MapActivity extends BaseActivity implements LocationSource,
         );
     }
     private void addMarks(double latitude,double longitude,String string){
+        String creater = BmobUser.getCurrentUser(UserInformation.class).getNickName();
         MarkerOptions markerOption = new MarkerOptions();
         markerOption.position(new LatLng(latitude,longitude));
-        markerOption.title("气味").snippet(string);
+        markerOption.title(creater).snippet(string);
         markerOption.draggable(true);
         BitmapAdd add = new BitmapAdd();
         markerOption.icon(BitmapDescriptorFactory.fromBitmap(add.getBitmap(MapActivity.this)));
@@ -315,13 +356,13 @@ public class MapActivity extends BaseActivity implements LocationSource,
         bmobGeoPoint.setLatitude(aMapLocation.getLatitude());
         BmobQuery<Smell> query = new BmobQuery<Smell>();
         query.addWhereWithinKilometers("point",bmobGeoPoint,50);
-        query.addWhereGreaterThanOrEqualTo("endTime",time.getNow());
+        query.addWhereGreaterThan("endtime",time.getNow());
         query.findObjects(new FindListener<Smell>() {
             @Override
             public void done(List<Smell> list, BmobException e) {
                 if (e==null){
                     for (Smell smell:list) {
-                        addMarks(smell.getPoint().getLatitude(),smell.getPoint().getLongitude(),smell.getTxt());
+                        addMarks(smell.getPoint().getLatitude(),smell.getPoint().getLongitude(),smell.getObjectId());
                     }
                 }else {
                     Log.d("MapActivity",e.getErrorCode() + ":" + e.getMessage());
@@ -343,7 +384,7 @@ public class MapActivity extends BaseActivity implements LocationSource,
             public void done(List<Bubble> list, BmobException e) {
                 if (e==null){
                     for (Bubble bubble : list){
-                        if (bubble.getRadius()>=50*1000){
+                        if (bubble.getRadius()>=10){
                             addCircle(bubble.getPoint().getLatitude(),bubble.getPoint().getLongitude(),bubble.getTitle());
                         }
                     }
@@ -500,35 +541,48 @@ public class MapActivity extends BaseActivity implements LocationSource,
             public void onClick(DialogInterface dialog, int which) {
                 double latitude = aMapLocation.getLatitude();
                 double longitude = aMapLocation.getLongitude();
-                final Smell smell = new Smell();
                 String creater = BmobUser.getCurrentUser(UserInformation.class).getNickName();
+                final Smell smell = new Smell();
                 smell.setTxt(smellText.getText().toString().trim());
                 smell.setPoint(new BmobGeoPoint(longitude, latitude));
                 smell.setTime(index);
-                smell.setComment("评论内容");
-                smell.setCommenter("评论人");
-                smell.setCommentTime(time.getNow());
+                smell.setComment("");
+                smell.setCommenter("");
+                smell.setCommentTime("");
                 smell.setCreater(creater);
+                smell.setCreaterPhone(UserInformation.getCurrentUser(UserInformation.class).getPhone());
                 smell.setEndtime(time.getTime(index));
-                image.upload(new UploadFileListener() {
-                    @Override
-                    public void done(BmobException e) {
-                        if (e == null) {
-                            Log.d("AddSmellActivity", "upload success");
-                            smell.setUrl(image.getFileUrl());
-                            smell.save(new SaveListener<String>() {
-                                @Override
-                                public void done(String s, BmobException e) {
-                                    if (e == null) {
-                                        new ShowTool().showToast(MapActivity.this, "提交成功");
+                if (image!=null){
+                    image.upload(new UploadFileListener() {
+                        @Override
+                        public void done(BmobException e) {
+                            if (e == null) {
+                                Log.d("AddSmellActivity", "upload success");
+                                smell.setUrl(image.getFileUrl());
+                                smell.save(new SaveListener<String>() {
+                                    @Override
+                                    public void done(String s, BmobException e) {
+                                        if (e == null) {
+                                            new ShowTool().showToast(MapActivity.this, "提交成功");
+                                        }
                                     }
-                                }
-                            });
-                        } else {
-                            Log.d("AddSmellActivity", e.getErrorCode() + e.getMessage());
+                                });
+                            } else {
+                                Log.d("AddSmellActivity", e.getErrorCode() + e.getMessage());
+                            }
                         }
-                    }
-                });
+                    });
+                }else {
+                    smell.save(new SaveListener<String>() {
+                        @Override
+                        public void done(String s, BmobException e) {
+                            if (e == null) {
+                                new ShowTool().showToast(MapActivity.this, "提交成功");
+                            }
+                        }
+                    });
+                }
+
             }
         });
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -623,7 +677,6 @@ public class MapActivity extends BaseActivity implements LocationSource,
                         break;
                     }
                 }
-                //startActivity(intent);
             }
         });
         builder.setView(view);
@@ -751,6 +804,17 @@ public class MapActivity extends BaseActivity implements LocationSource,
         final EditText radius = (EditText) view.findViewById(R.id.addShop_radius);
         final Button image = (Button) view.findViewById(R.id.addShop_image);
         Button who = (Button) view.findViewById(R.id.addShop_who);
+        who.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new  AlertDialog.Builder(MapActivity.this)
+                        .setTitle("好友" )
+                        .setMultiChoiceItems(userFriendNickNameString, null, null)
+                        .setPositiveButton("确定", null)// 设置对话框[肯定]按钮
+                        .setNegativeButton("取消", null)// 设置对话框[否定]按钮
+                        .show();
+            }
+        });
         SeekBar seekBar = (SeekBar) view.findViewById(R.id.addShop_time);
         Button submit = (Button) view.findViewById(R.id.addShop_builder);
         final TextView time = (TextView) view.findViewById(R.id.addShop_show);
@@ -823,6 +887,18 @@ public class MapActivity extends BaseActivity implements LocationSource,
                     }
                 }
             });
+        }else {
+            bubble.save(new SaveListener<String>() {
+                @Override
+                public void done(String s, BmobException e) {
+                    if (e == null) {
+                        Log.d("", "Add  Bubble Success");
+                        return;
+                    } else {
+                        Log.d("", e.getErrorCode() + e.getMessage());
+                    }
+                }
+            });
         }
     }
 
@@ -879,31 +955,159 @@ public class MapActivity extends BaseActivity implements LocationSource,
         // 返回 true 则表示接口已响应事件，否则返回false
         @SuppressLint("NewApi")
         @Override
-        public boolean onMarkerClick(Marker marker) {
+        public boolean onMarkerClick(final Marker marker) {
             if (marker.getSnippet()!=null||!marker.getSnippet().equals("")){
+                searchSmellCreaterPhone(marker);//查询smell创建者的手机号以及smelltext内容,smell创建者
                 AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
                 LayoutInflater inflater = LayoutInflater.from(MapActivity.this);
-                View view = inflater.inflate(R.layout.content_smellinfo,null);
+                final View view = inflater.inflate(R.layout.content_smellinfo,null);
                 builder.setView(view);
                 builder.create();
                 final Dialog dialog = builder.show();
-                TextView textView = (TextView)view.findViewById(R.id.smellinfo_snippet);
-                textView.setText(marker.getSnippet());
-                TextInputLayout layout = (TextInputLayout)view.findViewById(R.id.smellinfo_text);
-                String text = layout.getEditText().getText().toString();
-                Button comment = (Button)view.findViewById(R.id.smellinfo_comment);
-                comment.setOnClickListener(new View.OnClickListener() {
+                final TextView textView = (TextView)view.findViewById(R.id.smellinfo_snippet);
+                textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        BmobQuery<UserInformation> queryPhone = new BmobQuery<UserInformation>();
+                        queryPhone.addWhereEqualTo("phone",searchUserPhone);
+                        List<BmobQuery<UserInformation>> queries = new ArrayList<BmobQuery<UserInformation>>();
+                        queries.add(queryPhone);
+                        BmobQuery<UserInformation> mainQuery = new BmobQuery<UserInformation>();
+                        mainQuery.or(queries);
+                        mainQuery.findObjects(new FindListener<UserInformation>() {
+                            @Override
+                            public void done(List<UserInformation> object, BmobException e) {
+                                if (e == null) {
+                                    Log.e("查询大小", object.size()+"");
+                                    searchUser = object.get(0);
+                                    searchUserUrl = searchUser.getImage();
+                                    searchUserNickName = searchUser.getNickName();
+                                    searchUserPerMsg = searchUser.getPermsg();
+                                    //Toast.makeText(getApplicationContext(), user.getNickName()+"查询成功", Toast.LENGTH_SHORT).show();
+                                    AlertDialog.Builder b = new AlertDialog.Builder(MapActivity.this);
+                                    LayoutInflater layoutInflater = LayoutInflater.from(MapActivity.this);
+                                    View layout = layoutInflater.inflate(R.layout.content_visitingcard,null);
+                                    b.setView(layout);
+                                    b.create();
+                                    final Dialog d = b.show();
+                                    MyCircleView circleView = (MyCircleView)layout.findViewById(R.id.visiting_image);
+                                    new DownImage(circleView, searchUserUrl).execute(searchUserUrl);
+                                    TextView name = (TextView)layout.findViewById(R.id.visiting_name);
+                                    TextView autograph = (TextView)layout.findViewById(R.id.visiting_autograph);
+                                    Button addFriend = (Button)layout.findViewById(R.id.visiting_addfriend);
+                                    name.setText(smellCreater);
+                                    autograph.setText(smellText);
+                                    addFriend.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            //添加好友
+                                            if(searchUser.getPhone().equals(BmobUser.getCurrentUser(UserInformation.class).getPhone())){
+                                                Toast.makeText(getApplicationContext(), "您不能添加自己为好友", Toast.LENGTH_SHORT).show();
+                                            }else{
+                                                Message message = new Message();
+                                                message.obj=d;
+                                                message.what = SAVEUSERFRIENDLIST;
+                                                mHandler.sendMessage(message);
+                                            }
 
-                        //提交评论
-                        dialog.dismiss();
+                                        }
+                                    });
+                                } else {
+                                    //Toast.makeText(getApplicationContext(), "查询失败"+e, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
+
+                    }
+                });
+                final SmellComment comments = new SmellComment();
+                BmobQuery<Smell> query = new BmobQuery<Smell>();
+                query.getObject(marker.getSnippet(), new QueryListener<Smell>() {
+                    @Override
+                    public void done(Smell smell, BmobException e) {
+                        textView.setText(smell.getTxt());
+                        comments.setComment(smell.getComment());
+                        Log.d("1111111111",smell.getComment());
+                        comments.setCommenter(smell.getCommenter());
+                        Log.d("1111111111",smell.getCommenter());
+                        comments.setCommentime(smell.getCommentTime());
+                        Log.d("1111111111",smell.getCommentTime());
+                        final TextInputLayout layout = (TextInputLayout)view.findViewById(R.id.smellinfo_text);
+                        if ("".equals(comments.getCommenter())||comments.getCommenter()==null&&
+                                "".equals(comments.getCommentime())||comments.getCommentime()==null&&
+                                "".equals(comments.getComment())||comments.getComment()==null){
+                            final Button comment = (Button)view.findViewById(R.id.smellinfo_comment);
+                            comment.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Smell smell = new Smell();
+                                    smell.setCommenter("#"+smellCreater);
+                                    smell.setComment("#"+time.getNow());
+                                    smell.setCommentTime("#"+layout.getEditText().getText().toString());
+                                    smell.update(marker.getSnippet(), new UpdateListener() {
+                                        @Override
+                                        public void done(BmobException e) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                }
+                            });
+                        }else {
+                            LinearLayout linearLayout = (LinearLayout)view.findViewById(R.id.smellinfo_layout);
+                            String[] names = comments.getCommenter().split("#");
+                            String[] dates = comments.getCommentime().split("#");
+                            String[] datas = comments.getComment().split("#");
+                            for (int i=0;i<names.length;i++){
+                                linearLayout.addView(commentLayout(names[i],dates[i],datas[i]));
+                                Log.d("222222222",names[i]+","+dates[i]+","+datas[i]);
+                            }
+                            final Button comment = (Button)view.findViewById(R.id.smellinfo_comment);
+                            comment.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Smell smell = new Smell();
+                                    smell.setCommenter(comments.getCommenter()+"#"+smellCreater);
+                                    smell.setComment(comments.getCommentime()+"#"+time.getNow());
+                                    smell.setCommentTime(comments.getComment()+"#"+layout.getEditText().getText().toString());
+                                    smell.update(marker.getSnippet(), new UpdateListener() {
+                                        @Override
+                                        public void done(BmobException e) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                }
+                            });
+                        }
+
                     }
                 });
             }
             return true;
         }
     };
+
+    private View commentLayout(String commenter,String time,String comment){
+        TextView name = new TextView(this);
+        TextView data = new TextView(this);
+        name.setText(commenter+"\t\t - \t\t"+time);
+        data.setText(comment);
+        LinearLayout linearLayout = new LinearLayout(this);
+        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.addView(name);
+        linearLayout.addView(data);
+        linearLayout.setPadding(48,48,48,48);
+        MyCircleView circleView = new MyCircleView(this);
+        circleView.setImageResource(R.mipmap.ic_launcher);
+        LinearLayout viewgroup = new LinearLayout(this);
+        viewgroup.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        viewgroup.setOrientation(LinearLayout.HORIZONTAL);
+        viewgroup.setPadding(48,0,48,0);
+        viewgroup.addView(circleView);
+        viewgroup.addView(linearLayout);
+        return viewgroup;
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -970,5 +1174,167 @@ public class MapActivity extends BaseActivity implements LocationSource,
             mlocationClient.onDestroy();
         }
         mlocationClient = null;
+    }
+    /**
+     * bmob查询smell内CreaterPhone
+     */
+    private void searchSmellCreaterPhone(Marker marker){
+        final BmobQuery<Smell> query = new BmobQuery<Smell>();
+        query.getObject(marker.getSnippet(), new QueryListener<Smell>() {
+            @Override
+            public void done(Smell smell, BmobException e) {
+                if (e == null) {
+                    searchUserPhone = smell.getCreaterPhone();
+                    smellText = smell.getTxt();
+                    smellCreater = smell.getCreater();
+                } else {
+                    Log.e("获取smell创建者手机号失败", e+"" );
+                }
+            }
+        });
+    }
+
+    /**
+     * bmob查询登录用户好友信息
+     */
+    private void searchUserFriendInformation() {
+        final BmobQuery<UserFriend> query = new BmobQuery<UserFriend>();
+        query.addWhereEqualTo("userID", BmobUser.getCurrentUser(UserInformation.class).getPhone());
+        query.findObjects(new FindListener<UserFriend>() {
+            @Override
+            public void done(List<UserFriend> object, BmobException e) {
+                if (e == null) {
+                    loginUserFriendObjectID = object.get(0).getObjectId();
+                    getLoginUserFriendList();
+                    Log.e("objID", object.get(0).getObjectId());
+                } else {
+                    Log.e("获取登录用户好友列表obj失败", e+"" );
+                }
+            }
+        });
+    }
+
+    /**
+     * bmob查询想添加为好友的用户的好友信息
+     */
+    private void searchFriendFriendInformation() {
+        final BmobQuery<UserFriend> query = new BmobQuery<UserFriend>();
+        query.addWhereEqualTo("userID", searchUser.getPhone());
+        query.findObjects(new FindListener<UserFriend>() {
+            @Override
+            public void done(List<UserFriend> object, BmobException e) {
+                if (e == null) {
+                    loginFriendFriendObjectID = object.get(0).getObjectId();
+                    mHandler.sendEmptyMessage(SAVEFRIENDFRIENDLIST);
+                } else {
+
+                }
+            }
+        });
+    }
+    /**
+     * 储存登录用户好友关系
+     */
+    private void saveUserFriendList(){
+        UserFriend userFriend = new UserFriend();
+        userFriend.setObjectId(loginUserFriendObjectID);
+        BmobRelation relation = new BmobRelation();
+        //将当前用户添加到多对多关联中
+        relation.add(searchUser);
+        //多对多关联指向`post`的`likes`字段
+        userFriend.setUserFriend(relation);
+        userFriend.update(new UpdateListener() {
+            @Override
+            public void done(BmobException e) {
+                if (e == null) {
+                    //Toast.makeText(getApplicationContext(), "更新登录用户好友列表成功", Toast.LENGTH_SHORT).show();
+                    Log.e("登录用户好友列表储存", "ture");
+                    mHandler.sendEmptyMessage(GETFRIENDFRIENDOBJECT);
+                } else {
+                    //Toast.makeText(getApplicationContext(), e+"添加失败", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), loginUserFriendObjectID, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        });
+    }
+    /**
+     * 储存好友用户好友关系
+     */
+    private void saveFriendFriendList(){
+        UserFriend userFriend = new UserFriend();
+        userFriend.setObjectId(loginFriendFriendObjectID);
+        BmobRelation relation = new BmobRelation();
+        //将当前用户添加到多对多关联中
+        relation.add(BmobUser.getCurrentUser(UserInformation.class));
+        //多对多关联指向`post`的`likes`字段
+        userFriend.setUserFriend(relation);
+        userFriend.update(new UpdateListener() {
+            @Override
+            public void done(BmobException e) {
+                if (e == null) {
+                    Toast.makeText(getApplicationContext(), "成功添加好友", Toast.LENGTH_SHORT).show();
+                } else {
+                    //Toast.makeText(getApplicationContext(), e+"添加失败", Toast.LENGTH_SHORT).show();
+                    Log.e("错误",e+"" );
+                    Toast.makeText(getApplicationContext(), e+"", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        });
+    }
+    /**
+     *获取用户好友列表数据
+     */
+    private void getLoginUserFriendList(){
+        final UserFriend userFriend = new UserFriend();
+        // 查询好友列表内的所有用户，因此查询的是用户表
+        BmobQuery<UserInformation> userFriendQuery = new BmobQuery<UserInformation>();
+        userFriend.setObjectId(loginUserFriendObjectID);
+        //userFriend是UserFriend表中的字段，用来存储所有该用户的好友关系的用户
+        userFriendQuery.addWhereRelatedTo("userFriend", new BmobPointer(userFriend));
+        userFriendQuery.findObjects(new FindListener<UserInformation>() {
+            @Override
+            public void done(List<UserInformation> object,BmobException e) {
+                if(e==null){
+                    userFriendInformationList=object;
+                    //Toast.makeText(getApplicationContext(), "成功加载好友列表数据"+userFriendInformationList.size(), Toast.LENGTH_SHORT).show();
+                    userFriendNickNameString = new String[userFriendInformationList.size()];
+                    for(int i=0;i<userFriendInformationList.size();i++){
+                        userFriendNickNameString[i] = userFriendInformationList.get(i).getNickName();
+                    }
+                }else{
+                    //Toast.makeText(getApplicationContext(), e+"失败", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        });
+    }
+    class DownImage extends AsyncTask<String, Void, Bitmap> {
+
+        private MyCircleView imageView;
+
+        public DownImage(MyCircleView imageView, String url) {
+            this.imageView = imageView;
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            String url = params[0];
+            Bitmap bitmap = null;
+            try {
+                //加载一个网络图片
+                InputStream is = new URL(url).openStream();
+                bitmap = BitmapFactory.decodeStream(is);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return bitmap;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+            imageView.setImageBitmap(result);
+        }
     }
 }

@@ -95,6 +95,7 @@ public class ViewPaperActivity extends BaseFragment implements View.OnClickListe
         initViewPaper();
         initTabLineWidth();
         changeUserInformation();
+        loadingImage();
     }
 
     /**

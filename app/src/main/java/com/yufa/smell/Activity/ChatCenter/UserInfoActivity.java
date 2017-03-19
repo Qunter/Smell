@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -49,20 +51,21 @@ public class UserInfoActivity extends BaseActivity {
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     private ImageTool imageTool;
-    private BmobFile image=null;
-    private String imgUrl,userNickName;
-    private String newToken="";
-    private final int GETIMGURL=0x01,GETRONGTOKEN=0x02,BMOBUPDATEALL=0x03;
-    private Handler handler = new Handler(){
+    private BmobFile image = null;
+    private String imgUrl, userNickName;
+    private String newToken = "";
+    private final int GETIMGURL = 0x01, GETRONGTOKEN = 0x02, BMOBUPDATEALL = 0x03;
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case GETIMGURL:
                     saveUserImg();
                     break;
                 case GETRONGTOKEN:
-                    new getNewRongToken(UserInformation.getCurrentUser(UserInformation.class).getPhone(),userNickName,imgUrl).start();
+                    new getNewRongToken(UserInformation.getCurrentUser(UserInformation.class).getPhone(), userNickName, imgUrl).start();
+                    updata();
                     break;
                 case BMOBUPDATEALL:
                     bmobUpdateALL();
@@ -71,6 +74,7 @@ public class UserInfoActivity extends BaseActivity {
             }
         }
     };
+
     @Override
     public void initViews() {
         super.initViews();
@@ -78,7 +82,7 @@ public class UserInfoActivity extends BaseActivity {
         ButterKnife.bind(this);
         showActionBar(toolbar);
         headerTextview.setText("个人设置");
-        imageTool = new ImageTool(this,"UserImage");
+        imageTool = new ImageTool(this, "UserImage");
     }
 
     @Override
@@ -98,21 +102,34 @@ public class UserInfoActivity extends BaseActivity {
             //3本地获取url控件获取昵称
             //4联网获取url控件获取昵称
             case R.id.userinfo_save:
-                if (userinfoNickName.getText().toString().equals("")){
-                    if(image==null)
+//                if (userinfoNickName.getText().toString().equals("")) {
+//                    if (image == null)
+//                        handler.sendEmptyMessage(BMOBUPDATEALL);
+//                    else {
+//                        userNickName = UserInformation.getCurrentUser(UserInformation.class).getNickName();
+//                        handler.sendEmptyMessage(GETIMGURL);
+//                    }
+//                } else {
+//                    userNickName = userinfoNickName.getText().toString();
+//                    if (image == null) {
+//                        imgUrl = UserInformation.getCurrentUser(UserInformation.class).getImage();
+//                        handler.sendEmptyMessage(GETRONGTOKEN);
+//                    } else
+//                        handler.sendEmptyMessage(GETIMGURL);
+//                }
+                if (userinfoNickName.getText().toString().equals("")) {
+                    if (image == null)
                         handler.sendEmptyMessage(BMOBUPDATEALL);
-                    else{
+                    else {
                         userNickName = UserInformation.getCurrentUser(UserInformation.class).getNickName();
                         handler.sendEmptyMessage(GETIMGURL);
                     }
-                }
-                else{
+                } else {
                     userNickName = userinfoNickName.getText().toString();
-                    if(image==null){
+                    if (image == null) {
                         imgUrl = UserInformation.getCurrentUser(UserInformation.class).getImage();
                         handler.sendEmptyMessage(GETRONGTOKEN);
-                    }
-                    else
+                    } else
                         handler.sendEmptyMessage(GETIMGURL);
                 }
                 break;
@@ -140,74 +157,167 @@ public class UserInfoActivity extends BaseActivity {
     /**
      * 上传头像至bmob，获取该文件url
      */
-    private void saveUserImg(){
+    private void saveUserImg() {
         image.uploadblock(new UploadFileListener() {
             @Override
             public void onProgress(Integer arg0) {
 
             }
+
             @Override
             public void done(BmobException e) {
                 imgUrl = image.getUrl();
                 handler.sendEmptyMessage(GETRONGTOKEN);
-                Log.i("上传头像文件结束，url为", image.getUrl() );
+                Log.i("上传头像文件结束，url为", image.getUrl());
             }
 
         });
     }
+
     /**
      * 上传新资料至融云获取新token
      */
-    class getNewRongToken extends Thread{
+    class getNewRongToken extends Thread {
         String userId;//定义线程内变量
         String nickName;
-        String imgUrl="";
+        String imgUrl = "";
         User rongAppInformation = new User("z3v5yqkbzc1i0", "rAZ2RNIWtWCNYq");//融云APP信息
         String rongToken = "";
-        public getNewRongToken(String userId, String nickName,String imgUrl){//定义带参数的构造函数,达到初始化线程内变量的值
-            this.userId=userId;
-            this.nickName=nickName;
-            this.imgUrl=imgUrl;
+
+        public getNewRongToken(String userId, String nickName, String imgUrl) {//定义带参数的构造函数,达到初始化线程内变量的值
+            this.userId = userId;
+            this.nickName = nickName;
+            this.imgUrl = imgUrl;
         }
+
         @Override
         public void run() {
             try {
-                rongToken=rongAppInformation.getToken(userId,nickName,imgUrl).getToken();
-                newToken=rongToken ;
+                rongToken = rongAppInformation.getToken(userId, nickName, imgUrl).getToken();
+                newToken = rongToken;
                 handler.sendEmptyMessage(BMOBUPDATEALL);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
+
     /**
-     * 将所有修改保存至bmob
+     * 更改个性签名，年龄，职业
      */
-    private void bmobUpdateALL(){
+    private void updata() {
+
         UserInformation newUser = new UserInformation();
-        newUser.setImage(imgUrl);
-        if (newToken.equals("")){
-        }else{
-            newUser.setToken(newToken);
+        if (userinfoAge.getText() != null) {
+
+            newUser.setAge(userinfoAge.getText().toString());//设置年龄
+
+        } else {
+            newUser.setAge(UserInformation.getCurrentUser(UserInformation.class).getAge());
         }
-        if(userinfoPerMsg.getText()!=null){
-            newUser.setNickName(userinfoPerMsg.getText().toString());
-        }else if(userinfoAge.getText()!=null){
-            newUser.setNickName(userinfoAge.getText().toString());
-        }else if(userinfoProfession.getText()!=null){
-            newUser.setNickName(userinfoProfession.getText().toString());
+        if (userinfoProfession.getText() != null) {
+
+            newUser.setProfession(userinfoProfession.getText().toString());//设置职业
+
+        } else {
+            newUser.setProfession(UserInformation.getCurrentUser(UserInformation.class).getProfession());
+        }
+
+        if (userinfoPerMsg.getText() != null) {
+
+            newUser.setPermsg(userinfoPerMsg.getText().toString());//设置个性签名
+
+        } else {
+            newUser.setPermsg(UserInformation.getCurrentUser(UserInformation.class).getPermsg());
         }
         UserInformation loginUser = UserInformation.getCurrentUser(UserInformation.class);
-        newUser.update(loginUser.getObjectId(),new UpdateListener() {
+        newUser.update(loginUser.getObjectId(), new UpdateListener() {
             @Override
             public void done(BmobException e) {
-                if(e==null){
+                if (e == null) {
                     Toast.makeText(getApplicationContext(), "修改成功", Toast.LENGTH_SHORT).show();
-                }else{
-                    Log.e("bmob储存修改失败", e+"" );
+                } else {
+                    Log.e("bmob储存修改失败", e + "");
                 }
             }
         });
+    }
+
+    /**
+     * 将所有修改保存至bmob
+     */
+    private void bmobUpdateALL() {
+        UserInformation newUser = new UserInformation();
+        newUser.setImage(imgUrl);
+        if (newToken.equals("")) {
+        } else {
+            newUser.setToken(newToken);
+        }
+        if (userinfoNickName.getText() != null) {
+
+            newUser.setNickName(userinfoNickName.getText().toString());//设置昵称
+
+        } else {
+            newUser.setNickName(UserInformation.getCurrentUser(UserInformation.class).getNickName());
+        }
+        if (userinfoAge.getText() != null) {
+
+            newUser.setAge(userinfoAge.getText().toString());//设置年龄
+
+        } else {
+            newUser.setAge(UserInformation.getCurrentUser(UserInformation.class).getAge());
+        }
+        if (userinfoProfession.getText() != null) {
+
+            newUser.setProfession(userinfoProfession.getText().toString());//设置职业
+
+        } else {
+            newUser.setProfession(UserInformation.getCurrentUser(UserInformation.class).getProfession());
+        }
+
+        if (userinfoPerMsg.getText() != null) {
+
+            newUser.setPermsg(userinfoPerMsg.getText().toString());//设置个性签名
+
+        } else {
+            newUser.setPermsg(UserInformation.getCurrentUser(UserInformation.class).getPermsg());
+        }
+        UserInformation loginUser = UserInformation.getCurrentUser(UserInformation.class);
+        newUser.update(loginUser.getObjectId(), new UpdateListener() {
+            @Override
+            public void done(BmobException e) {
+                if (e == null) {
+                    Toast.makeText(getApplicationContext(), "修改成功", Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.e("bmob储存修改失败", e + "");
+                }
+            }
+        });
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            Intent intent = new Intent();
+            intent.setClass(UserInfoActivity.this, ViewPaperActivity.class);
+            startActivity(intent);
+            UserInfoActivity.this.finish();
+            return false;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            Intent intent = new Intent();
+            intent.setClass(UserInfoActivity.this, ViewPaperActivity.class);
+            startActivity(intent);
+            UserInfoActivity.this.finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 }

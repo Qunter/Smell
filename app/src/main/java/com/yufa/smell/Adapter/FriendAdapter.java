@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.yufa.smell.Activity.ChatCenter.HaoyouFragment;
 import com.yufa.smell.Activity.ChatCenter.ImageLoader;
 import com.yufa.smell.Activity.ChatCenter.RongTt.Friend;
+import com.yufa.smell.CustomView.MyCircleView;
 import com.yufa.smell.Entity.UserInformation;
 import com.yufa.smell.R;
 
@@ -89,7 +90,7 @@ public class FriendAdapter extends BaseAdapter implements RongIM.UserInfoProvide
         if (convertView == null) {
             viewHolder = new ViewHolder();
             convertView = mInflater.inflate(R.layout.item_fragment_haoyou, null);
-            viewHolder.userFriendImg = (ImageView) convertView.findViewById(R.id.friend_image);
+            viewHolder.userFriendImg = (MyCircleView) convertView.findViewById(R.id.friend_image);
             viewHolder.userFriendNickName = (TextView) convertView.findViewById(R.id.friend_nickname);
             convertView.setTag(viewHolder);
         } else {
@@ -156,7 +157,7 @@ public class FriendAdapter extends BaseAdapter implements RongIM.UserInfoProvide
 
     class ViewHolder {
         public TextView userFriendNickName;
-        public ImageView userFriendImg;
+        public MyCircleView userFriendImg;
     }
     /**
      * 储存好友相关信息：id，昵称，token

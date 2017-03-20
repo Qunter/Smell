@@ -266,7 +266,7 @@ public class MapActivity extends BaseActivity implements LocationSource,
         // 自定义系统定位小蓝点
         MyLocationStyle myLocationStyle = new MyLocationStyle();
         myLocationStyle.myLocationIcon(BitmapDescriptorFactory
-                .fromResource(R.drawable.arrowhead));// 设置小蓝点的图标
+                .fromResource(R.drawable.arrow));// 设置小蓝点的图标
         myLocationStyle.strokeColor(Color.argb(0,0,0,0));// 设置圆形的边框颜色
         myLocationStyle.radiusFillColor(Color.argb(0, 0, 0, 0));// 设置圆形的填充颜色
         myLocationStyle.strokeWidth(1.0f);// 设置圆形的边框粗细
@@ -336,8 +336,7 @@ public class MapActivity extends BaseActivity implements LocationSource,
         markerOption.position(new LatLng(latitude,longitude));
         markerOption.title(creater).snippet(string);
         markerOption.draggable(true);
-        BitmapAdd add = new BitmapAdd();
-        markerOption.icon(BitmapDescriptorFactory.fromBitmap(add.getBitmap(MapActivity.this)));
+        markerOption.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.raindot)));
         aMap.addMarker(markerOption);
     }
     private void marks(double latitude,double longitude){
@@ -345,7 +344,7 @@ public class MapActivity extends BaseActivity implements LocationSource,
         markerOption.position(new LatLng(latitude,longitude));
         markerOption.draggable(true);
         //BitmapAdd add = new BitmapAdd();
-        markerOption.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.arrowhead)));
+        markerOption.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.arrow)));
         aMap.addMarker(markerOption);
     }
 
@@ -696,6 +695,17 @@ public class MapActivity extends BaseActivity implements LocationSource,
         final EditText radius = (EditText) view.findViewById(R.id.addActivity_radius);
         final Button image = (Button) view.findViewById(R.id.addActivity_image);
         Button who = (Button) view.findViewById(R.id.addActivity_who);
+        who.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new  AlertDialog.Builder(MapActivity.this)
+                        .setTitle("好友" )
+                        .setMultiChoiceItems(userFriendNickNameString, null, null)
+                        .setPositiveButton("确定", null)// 设置对话框[肯定]按钮
+                        .setNegativeButton("取消", null)// 设置对话框[否定]按钮
+                        .show();
+            }
+        });
         SeekBar seekBar = (SeekBar) view.findViewById(R.id.addActivity_time);
         Button submit = (Button) view.findViewById(R.id.addActivity_builders);
         final TextView time = (TextView) view.findViewById(R.id.addActivity_show);
@@ -750,6 +760,17 @@ public class MapActivity extends BaseActivity implements LocationSource,
         final EditText radius = (EditText) view.findViewById(R.id.addBooth_radius);
         final Button image = (Button) view.findViewById(R.id.addBooth_image);
         Button who = (Button) view.findViewById(R.id.addBooth_who);
+        who.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new  AlertDialog.Builder(MapActivity.this)
+                        .setTitle("好友" )
+                        .setMultiChoiceItems(userFriendNickNameString, null, null)
+                        .setPositiveButton("确定", null)// 设置对话框[肯定]按钮
+                        .setNegativeButton("取消", null)// 设置对话框[否定]按钮
+                        .show();
+            }
+        });
         SeekBar seekBar = (SeekBar) view.findViewById(R.id.addBooth_time);
         Button submit = (Button) view.findViewById(R.id.addBooth_builder);
         final TextView time = (TextView) view.findViewById(R.id.addBooth_show);
@@ -1059,7 +1080,10 @@ public class MapActivity extends BaseActivity implements LocationSource,
                             String[] dates = comments.getCommentime().split("#");
                             String[] datas = comments.getComment().split("#");
                             for (int i=0;i<names.length;i++){
-                                linearLayout.addView(commentLayout(names[i],dates[i],datas[i]));
+                                View v = commentLayout(names[i],dates[i],datas[i]);
+                                if(v!=null){
+                                    linearLayout.addView(v);
+                                }
                                 Log.d("222222222",names[i]+","+dates[i]+","+datas[i]);
                             }
                             final Button comment = (Button)view.findViewById(R.id.smellinfo_comment);
@@ -1068,8 +1092,8 @@ public class MapActivity extends BaseActivity implements LocationSource,
                                 public void onClick(View v) {
                                     Smell smell = new Smell();
                                     smell.setCommenter(comments.getCommenter()+"#"+smellCreater);
-                                    smell.setComment(comments.getCommentime()+"#"+time.getNow());
-                                    smell.setCommentTime(comments.getComment()+"#"+layout.getEditText().getText().toString());
+                                    smell.setCommentTime(comments.getCommentime()+"#"+time.getNow());
+                                    smell.setComment(comments.getComment()+"#"+layout.getEditText().getText().toString());
                                     smell.update(marker.getSnippet(), new UpdateListener() {
                                         @Override
                                         public void done(BmobException e) {
@@ -1088,25 +1112,30 @@ public class MapActivity extends BaseActivity implements LocationSource,
     };
 
     private View commentLayout(String commenter,String time,String comment){
-        TextView name = new TextView(this);
-        TextView data = new TextView(this);
-        name.setText(commenter+"\t\t - \t\t"+time);
-        data.setText(comment);
-        LinearLayout linearLayout = new LinearLayout(this);
-        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.addView(name);
-        linearLayout.addView(data);
-        linearLayout.setPadding(48,48,48,48);
-        MyCircleView circleView = new MyCircleView(this);
-        circleView.setImageResource(R.mipmap.ic_launcher);
-        LinearLayout viewgroup = new LinearLayout(this);
-        viewgroup.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        viewgroup.setOrientation(LinearLayout.HORIZONTAL);
-        viewgroup.setPadding(48,0,48,0);
-        viewgroup.addView(circleView);
-        viewgroup.addView(linearLayout);
-        return viewgroup;
+        if (!commenter.equals("")){
+
+            TextView name = new TextView(this);
+            TextView data = new TextView(this);
+            name.setText(commenter+"\t\t - \t\t"+time);
+            data.setText(comment);
+            LinearLayout linearLayout = new LinearLayout(this);
+            linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+            linearLayout.addView(name);
+            linearLayout.addView(data);
+            linearLayout.setPadding(48,48,48,48);
+            MyCircleView circleView = new MyCircleView(this);
+            circleView.setImageResource(R.drawable.icons);
+            LinearLayout viewgroup = new LinearLayout(this);
+            viewgroup.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            viewgroup.setOrientation(LinearLayout.HORIZONTAL);
+            viewgroup.setPadding(48,24,48,0);
+            viewgroup.addView(circleView);
+            viewgroup.addView(linearLayout);
+            return viewgroup;
+        }else {
+            return  null;
+        }
     }
 
     @Override

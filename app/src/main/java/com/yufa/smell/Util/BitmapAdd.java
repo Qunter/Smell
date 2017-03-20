@@ -45,9 +45,9 @@ public class BitmapAdd {
 
     public Bitmap getBitmap(Context context) {
         Bitmap bitmap1 = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.smellimage).copy(Bitmap.Config.ARGB_8888, true);
+                R.drawable.raindot).copy(Bitmap.Config.ARGB_8888, true);
         Bitmap bitmap2 = ((BitmapDrawable) context.getResources().getDrawable(
-                R.drawable.image)).getBitmap();
+                R.drawable.icon)).getBitmap();
         return add(bitmap1,toRoundBitmap(toSmall(bitmap2)));
     }
 

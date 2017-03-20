@@ -47,7 +47,7 @@ public class LoginActivity extends BaseActivity {
     @BindView(R.id.login_forget)
     Button loginForget;
     @BindView(R.id.same)
-    CircleView same;
+    ImageView same;
     private boolean isLogin = false;
 
     @Override

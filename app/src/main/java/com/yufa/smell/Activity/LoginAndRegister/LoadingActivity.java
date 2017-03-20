@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,7 +51,7 @@ public class LoadingActivity extends BaseActivity {
     @BindView(R.id.loading_up)
     TextView loadingUp;
     @BindView(R.id.same)
-    CircleView same;
+    ImageView same;
     private GestureDetector gestureDetector;
     private Boolean isShow = false;
     private long exitTime = 0;
@@ -108,38 +109,6 @@ public class LoadingActivity extends BaseActivity {
             intent.setClass(LoadingActivity.this, LoginActivity.class);
             startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(LoadingActivity.this, same, "same").toBundle());
         }
-    }
-
-    private void isLogin() {
-        SharedPreferencesHelper sph = SharedPreferencesHelper.getInstance(this);
-        String account = sph.getString("account", "null");
-        String password = sph.getString("password", "null");
-        final String isLock = sph.getString("drawpasw", null);
-        BmobQuery<UserInformation> query = new BmobQuery<UserInformation>();
-        query.addWhereEqualTo("account", account);
-        query.addWhereEqualTo("password", password);
-        query.findObjects(new FindListener<UserInformation>() {
-            @SuppressLint("NewApi")
-            @Override
-            public void done(List<UserInformation> list, BmobException e) {
-                if (e == null && list.size() == 1) {
-                    if (isLock != null) {
-                        Intent intent = new Intent();
-                        intent.putExtra("setOrValidate", 1);
-                        intent.setClass(LoadingActivity.this, ScreenLockActivity.class);
-                        startActivity(intent);
-                    } else {
-                        Intent intent = new Intent(LoadingActivity.this, MapActivity.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                } else {
-                    Intent intent = new Intent();
-                    intent.setClass(LoadingActivity.this, LoginActivity.class);
-                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(LoadingActivity.this, same, "same").toBundle());
-                }
-            }
-        });
     }
 
     @Override
